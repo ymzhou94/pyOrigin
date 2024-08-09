@@ -71,11 +71,11 @@ def pyOrigin(ax, x, y, scale="linear", x_tick_format=None, y_tick_format=None,
     # Set custom tick intervals if specified
     if x_tick_distance is not None:
         ax.xaxis.set_major_locator(ticker.MultipleLocator(x_tick_distance))
-        ax2.xaxis.set_major_locator(ticker.MultipleLocator(x_tick_distance))
+        ax3.xaxis.set_major_locator(ticker.MultipleLocator(x_tick_distance))
 
     if y_tick_distance is not None:
         ax.yaxis.set_major_locator(ticker.MultipleLocator(y_tick_distance))
-        ax3.yaxis.set_major_locator(ticker.MultipleLocator(y_tick_distance))
+        ax2.yaxis.set_major_locator(ticker.MultipleLocator(y_tick_distance))
 
     # Return the main and twin axes
     return ax, ax2, ax3
