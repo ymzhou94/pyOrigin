@@ -11,7 +11,7 @@ matplotlib.rc('font', **font)           # set font
 matplotlib.rc('axes', **axes)           # set axes
 matplotlib.rc('lines', **lines)         # set lines
 
-def pyOrigin(ax, x, y, scale="linear", tick_format_x=1, tick_format_y=1,
+def pyOrigin(ax, x, y, scale="linear", x_tick_format=None, y_tick_format=None,
              x_tick_distance=None, y_tick_distance=None):
     """
     Customizes the appearance and behavior of tick marks on a Matplotlib plot.
@@ -20,8 +20,8 @@ def pyOrigin(ax, x, y, scale="linear", tick_format_x=1, tick_format_y=1,
     - ax: Matplotlib axes object.
     - x, y: Data for plotting on the additional axes (right and top) to synchronize.
     - scale: Scale type for the plot, either 'linear' or 'log' (default is 'linear').
-    - tick_format_x: Number of decimal places for X-axis tick labels (default is 1).
-    - tick_format_y: Number of decimal places for Y-axis tick labels (default is 1).
+    - x_tick_format: Number of decimal places for X-axis tick labels (optional, default is None).
+    - y_tick_format: Number of decimal places for Y-axis tick labels (optional, default is None).
     - x_tick_distance: Custom interval between major ticks on the X-axis (optional).
     - y_tick_distance: Custom interval between major ticks on the Y-axis (optional).
     
@@ -59,11 +59,14 @@ def pyOrigin(ax, x, y, scale="linear", tick_format_x=1, tick_format_y=1,
     ax2.spines['right'].set_color('none')  # Hide the right spine
     ax3.spines['top'].set_color('none')    # Hide the top spine
 
-    # Format tick labels to display a specific number of decimal places
-    ax.xaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{tick_format_x}f"))
-    ax.yaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{tick_format_y}f"))
-    ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{tick_format_y}f"))
-    ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{tick_format_x}f"))
+    # Format tick labels to display a specific number of decimal places if specified
+    if x_tick_format is not None:
+        ax.xaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{x_tick_format}f"))
+        ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{x_tick_format}f"))
+
+    if y_tick_format is not None:
+        ax.yaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{y_tick_format}f"))
+        ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{y_tick_format}f"))
 
     # Set custom tick intervals if specified
     if x_tick_distance is not None:
@@ -76,8 +79,6 @@ def pyOrigin(ax, x, y, scale="linear", tick_format_x=1, tick_format_y=1,
 
     # Return the main and twin axes
     return ax, ax2, ax3
-
-
 
 colors = [
     "#515151", "#F14040", "#1A6FDF", "#37AD6B", "#B177DE", "#CC9900",
