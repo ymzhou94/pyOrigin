@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib
+import matplotlib.ticker as ticker
 
 font = {'family': 'Arial', 'weight': 'normal', 'size': 30}
 label_font = {'family': 'Arial', 'weight': 'normal', 'size': 40}
@@ -10,50 +11,72 @@ matplotlib.rc('font', **font)           # set font
 matplotlib.rc('axes', **axes)           # set axes
 matplotlib.rc('lines', **lines)         # set lines
 
-def pyOrigin(ax, x, y, scale="linear"):
+def pyOrigin(ax, x, y, scale="linear", tick_format_x=1, tick_format_y=1,
+             x_tick_distance=None, y_tick_distance=None):
     """
-    Adjusts the direction of tick marks on the left, bottom, right, and top axes, 
-    and hides the tick labels and gridlines on the right and top axes.
-
+    Customizes the appearance and behavior of tick marks on a Matplotlib plot.
+    
     Parameters:
-    ax (matplotlib.axes.Axes): The primary axis on which to set the tick directions.
-    x (array-like): Data for the x-axis.
-    y (array-like): Data for the y-axis.
-    scale (str, optional): The scale for the y-axis, either 'linear' or 'log'. Defaults to 'linear'.
-
+    - ax: Matplotlib axes object.
+    - x, y: Data for plotting on the additional axes (right and top) to synchronize.
+    - scale: Scale type for the plot, either 'linear' or 'log' (default is 'linear').
+    - tick_format_x: Number of decimal places for X-axis tick labels (default is 1).
+    - tick_format_y: Number of decimal places for Y-axis tick labels (default is 1).
+    - x_tick_distance: Custom interval between major ticks on the X-axis (optional).
+    - y_tick_distance: Custom interval between major ticks on the Y-axis (optional).
+    
     Returns:
-    tuple: The original axis (ax), the twin y-axis (ax2), and the twin x-axis (ax3).
+    - ax: The original axes.
+    - ax2: The twin axes on the right (Y-axis).
+    - ax3: The twin axes on the top (X-axis).
     """
     
-    # Set the direction of tick marks on the left and bottom axes to point inward
+    # Set the direction and size of tick marks on the left and bottom axes
     ax.tick_params(axis='both', which='major', length=8, width=2)
     ax.tick_params(axis='both', which='minor', length=4, width=2)
 
-    # Create twin axes for the right y-axis and top x-axis
-    ax2 = ax.twinx()
-    ax3 = ax.twiny()
+    # Create twin axes on the right (ax2) and top (ax3)
+    ax2 = ax.twinx()  # Right Y-axis
+    ax3 = ax.twiny()  # Top X-axis
 
-    # Set the tick marks on the right y-axis to point inward and hide labels
+    # Customize the right Y-axis ticks: point inward, hide labels
     ax2.yaxis.set_ticks_position('right')
-    ax2.plot(x, y, alpha=0.0)  # Plot an invisible line to synchronize the scale
-    ax2.set_yscale(scale)
+    ax2.plot(x, y, alpha=0.0)  # Invisible plot to synchronize axes
+    ax2.set_yscale(scale)  # Set the scale (linear or logarithmic)
     ax2.tick_params(axis='y', which="both", direction='in', labelleft=False, labelright=False)
     ax2.tick_params(axis='both', which='major', length=8, width=2)
     ax2.tick_params(axis='both', which='minor', length=4, width=2)
 
-    # Set the tick marks on the top x-axis to point inward and hide labels
+    # Customize the top X-axis ticks: point inward, hide labels
     ax3.xaxis.set_ticks_position('top')
-    ax3.plot(x, y, alpha=0.0)  # Plot an invisible line to synchronize the scale
+    ax3.plot(x, y, alpha=0.0)  # Invisible plot to synchronize axes
     ax3.tick_params(axis='x', which="both", direction='in', labeltop=False, labelbottom=False)
-    ax3.set_yscale(scale)
+    ax3.set_yscale(scale)  # Set the scale (linear or logarithmic)
     ax3.tick_params(axis='both', which='major', length=8, width=2)
     ax3.tick_params(axis='both', which='minor', length=4, width=2)
 
-    # Hide the gridlines and spines (borders) on the right and top axes
-    ax2.spines['right'].set_color('none')
-    ax3.spines['top'].set_color('none')
+    # Hide grid lines and labels on the right and top spines
+    ax2.spines['right'].set_color('none')  # Hide the right spine
+    ax3.spines['top'].set_color('none')    # Hide the top spine
 
+    # Format tick labels to display a specific number of decimal places
+    ax.xaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{tick_format_x}f"))
+    ax.yaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{tick_format_y}f"))
+    ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{tick_format_y}f"))
+    ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{tick_format_x}f"))
+
+    # Set custom tick intervals if specified
+    if x_tick_distance is not None:
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(x_tick_distance))
+        ax2.xaxis.set_major_locator(ticker.MultipleLocator(x_tick_distance))
+
+    if y_tick_distance is not None:
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(y_tick_distance))
+        ax3.yaxis.set_major_locator(ticker.MultipleLocator(y_tick_distance))
+
+    # Return the main and twin axes
     return ax, ax2, ax3
+
 
 
 colors = [
