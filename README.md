@@ -1,1 +1,1 @@
-This function is used to plot an Origin-like style in Python with Matplotlib
+This function replicates Origin-style plots in Python using Matplotlib.
