@@ -67,4 +67,9 @@ ax1.plot(x, y, color = colors[1], linewidth = 8, alpha=0.8, label = "Any")
 ax1.set_ylabel('Voltage (V)', fontdict=label_font)
 ax1.set_xlabel('Time (ns)', fontdict=label_font)
 ax1.legend(frameon = False)
-set_ticks_directions(ax_1, x_fit, y_fit)
+set_ticks_directions(ax1, x_fit, y_fit)
+
+plt.tight_layout()
+position = path_fig + '_1.jpg'
+fig.savefig(position, bbox_inches='tight', pad_inches=0.27, dpi=300, format='jpg')
+plt.show()
