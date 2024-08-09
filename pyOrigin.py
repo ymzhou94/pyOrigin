@@ -1,3 +1,15 @@
+import matplotlib.pyplot as plt
+import matplotlib
+
+font = {'family': 'Arial', 'weight': 'normal', 'size': 30}
+label_font = {'family': 'Arial', 'weight': 'normal', 'size': 40}
+axes = {'linewidth': 2}
+lines = {'linewidth': 2}
+
+matplotlib.rc('font', **font)           # set font
+matplotlib.rc('axes', **axes)           # set axes
+matplotlib.rc('lines', **lines)         # set lines
+
 def pyOrigin(ax, x, y, scale="linear"):
     """
     Adjusts the direction of tick marks on the left, bottom, right, and top axes, 
@@ -42,3 +54,17 @@ def pyOrigin(ax, x, y, scale="linear"):
     ax3.spines['top'].set_color('none')
 
     return ax, ax2, ax3
+
+
+colors = [
+    "#515151", "#F14040", "#1A6FDF", "#37AD6B", "#B177DE", "#CC9900",
+    "#00CBCC", "#7D4E4E", "#8E8E00", "#FB6501", "#6699CC", "#6FB802"
+] # Color4line in Origin
+
+fig = plt.figure(num=1, figsize=(13, 9))
+ax1 = fig.add_subplot(111)
+ax1.plot(x, y, color = colors[1], linewidth = 8, alpha=0.8, label = "Any")
+ax1.set_ylabel('Voltage (V)', fontdict=label_font)
+ax1.set_xlabel('Time (ns)', fontdict=label_font)
+ax1.legend(frameon = False)
+set_ticks_directions(ax_1, x_fit, y_fit)
