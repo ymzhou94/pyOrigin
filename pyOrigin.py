@@ -116,7 +116,7 @@ ax1.plot(x, y, color = colors[1], linewidth = 8, alpha=0.8, label = "Any")
 ax1.set_ylabel('Voltage (V)', fontdict=label_font)
 ax1.set_xlabel('Time (ns)', fontdict=label_font)
 ax1.legend(frameon = False)
-pyOrigin(ax1, x, y)
+pyOrigin(ax1, x, y, x_tick_format=1, y_tick_format=1, y_tick_distance=0.1)
 
 plt.tight_layout()
 position = path_fig + '_1.jpg'
