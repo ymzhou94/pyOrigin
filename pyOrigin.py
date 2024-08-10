@@ -11,23 +11,24 @@ matplotlib.rc('font', **font)           # set font
 matplotlib.rc('axes', **axes)           # set axes
 matplotlib.rc('lines', **lines)         # set lines
 
-def pyOrigin(ax, x, y, scale="linear", x_tick_format=None, y_tick_format=None,
+def pyOrigin(ax, x, y, x_scale="linear", y_scale="linear", x_tick_format=None, y_tick_format=None,
                          x_tick_distance=None, y_tick_distance=None, x_sci_format=False,
                          y_sci_format=False, x_lim=None, y_lim=None):
     """
-    Configures the appearance of tick marks on a Matplotlib plot, including creating twin axes for additional customization.
+    Configures tick marks and axes to create an Origin-like plot style using Matplotlib.
 
     Parameters:
     ax (matplotlib.axes.Axes): The primary axes on which the plot is drawn.
     x (array-like): Data for the x-axis (used for synchronizing twin axes).
     y (array-like): Data for the y-axis (used for synchronizing twin axes).
-    scale (str): The scale of the axes, either "linear" or "log" (default is "linear").
+    x_scale (str): Scale for the x-axis ('linear' or 'log'). Default is 'linear'.
+    y_scale (str): Scale for the y-axis ('linear' or 'log'). Default is 'linear'.
     x_tick_format (int, optional): Number of decimal places for x-axis tick labels. Default is None.
     y_tick_format (int, optional): Number of decimal places for y-axis tick labels. Default is None.
     x_tick_distance (float, optional): Distance between major ticks on the x-axis. Default is None.
     y_tick_distance (float, optional): Distance between major ticks on the y-axis. Default is None.
-    x_sci_format (bool): Whether to use scientific notation for x-axis. Default is False.
-    y_sci_format (bool): Whether to use scientific notation for y-axis. Default is False.
+    x_sci_format (bool): Use scientific notation for x-axis. Default is False.
+    y_sci_format (bool): Use scientific notation for y-axis. Default is False.
     x_lim (tuple, optional): Limits for the x-axis in the form (min, max). Default is None.
     y_lim (tuple, optional): Limits for the y-axis in the form (min, max). Default is None.
 
@@ -35,76 +36,74 @@ def pyOrigin(ax, x, y, scale="linear", x_tick_format=None, y_tick_format=None,
     tuple: The primary axes and the two twin axes (ax, ax2, ax3) for further customization.
     """
 
-    # Set the tick direction and size for both major and minor ticks on the primary axes.
+    # Set the scale and tick parameters for the primary axes
+    ax.set_xscale(x_scale)
+    ax.set_yscale(y_scale)
     ax.tick_params(axis='both', which='major', length=8, width=2)
     ax.tick_params(axis='both', which='minor', length=4, width=2)
 
-    # Create twin axes: ax2 on the right for the y-axis, and ax3 on the top for the x-axis.
-    ax2 = ax.twinx()  # Twin y-axis on the right side.
-    ax3 = ax.twiny()  # Twin x-axis on the top side.
+    # Create twin axes on the right (ax2) for the y-axis and top (ax3) for the x-axis
+    ax2 = ax.twinx()  # Right Y-axis
+    ax3 = ax.twiny()  # Top X-axis
 
-    # Customize ax2 (right y-axis): Set ticks to point inward and hide the tick labels.
+    # Customize ax2 (right y-axis)
+    ax2.set_yscale(y_scale)  # Match the y-scale with the main axis
+    ax2.plot(x, y, alpha=0.0)  # Invisible plot to synchronize axes
     ax2.yaxis.set_ticks_position('right')
-    ax2.plot(x, y, alpha=0.0)  # Synchronize with main axes using an invisible plot.
-    ax2.set_yscale(scale)  # Apply the same scale as the primary y-axis.
-    ax2.tick_params(axis='y', which="both", direction='in', labelleft=False, labelright=False)
-    ax2.tick_params(axis='both', which='major', length=8, width=2)
-    ax2.tick_params(axis='both', which='minor', length=4, width=2)
+    ax2.tick_params(axis='y', direction='in', labelleft=False, labelright=False, length=8, width=2)
 
-    # Customize ax3 (top x-axis): Set ticks to point inward and hide the tick labels.
+    # Customize ax3 (top x-axis)
+    ax3.set_xscale(x_scale)  # Match the x-scale with the main axis
+    ax3.plot(x, y, alpha=0.0)  # Invisible plot to synchronize axes
     ax3.xaxis.set_ticks_position('top')
-    ax3.plot(x, y, alpha=0.0)  # Synchronize with main axes using an invisible plot.
-    ax3.tick_params(axis='x', which="both", direction='in', labeltop=False, labelbottom=False)
-    ax3.tick_params(axis='both', which='major', length=8, width=2)
-    ax3.tick_params(axis='both', which='minor', length=4, width=2)
+    ax3.tick_params(axis='x', direction='in', labeltop=False, labelbottom=False, length=8, width=2)
 
-    # Hide the spines (axis lines) on the right and top to keep the plot clean.
+    # Hide the spines on the right and top
     ax2.spines['right'].set_color('none')
     ax3.spines['top'].set_color('none')
 
-    # Apply custom formatting to x-axis ticks if specified.
+    # Apply custom formatting to tick labels if specified
     if x_tick_format is not None:
-        ax.xaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{x_tick_format}f"))
-        ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{x_tick_format}f"))
+        formatter = ticker.FormatStrFormatter(f"%.{x_tick_format}f")
+        ax.xaxis.set_major_formatter(formatter)
+        ax3.xaxis.set_major_formatter(formatter)
 
-    # Apply custom formatting to y-axis ticks if specified.
     if y_tick_format is not None:
-        ax.yaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{y_tick_format}f"))
-        ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter(f"%.{y_tick_format}f"))
+        formatter = ticker.FormatStrFormatter(f"%.{y_tick_format}f")
+        ax.yaxis.set_major_formatter(formatter)
+        ax2.yaxis.set_major_formatter(formatter)
 
-    # Set custom major tick intervals for the x-axis if specified.
+    # Set custom tick intervals if specified
     if x_tick_distance is not None:
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(x_tick_distance))
-        ax3.xaxis.set_major_locator(ticker.MultipleLocator(x_tick_distance))
+        locator = ticker.MultipleLocator(x_tick_distance)
+        ax.xaxis.set_major_locator(locator)
+        ax3.xaxis.set_major_locator(locator)
 
-    # Set custom major tick intervals for the y-axis if specified.
     if y_tick_distance is not None:
-        ax.yaxis.set_major_locator(ticker.MultipleLocator(y_tick_distance))
-        ax2.yaxis.set_major_locator(ticker.MultipleLocator(y_tick_distance))
+        locator = ticker.MultipleLocator(y_tick_distance)
+        ax.yaxis.set_major_locator(locator)
+        ax2.yaxis.set_major_locator(locator)
 
-    # Use scientific notation for the x-axis if specified.
+    # Use scientific notation if specified
     if x_sci_format:
         ax.xaxis.set_major_formatter(ticker.LogFormatterMathtext())
         ax3.xaxis.set_major_formatter(ticker.LogFormatterMathtext())
 
-    # Use scientific notation for the y-axis if specified.
     if y_sci_format:
         ax.yaxis.set_major_formatter(ticker.LogFormatterMathtext())
         ax2.yaxis.set_major_formatter(ticker.LogFormatterMathtext())
 
-    # Apply limits to the x-axis if specified.
+    # Apply axis limits if specified
     if x_lim is not None:
         ax.set_xlim(x_lim)
         ax3.set_xlim(x_lim)
 
-    # Apply limits to the y-axis if specified.
     if y_lim is not None:
         ax.set_ylim(y_lim)
         ax2.set_ylim(y_lim)
 
-    # Return the main axes and the two twin axes for further customization.
+    # Return the main and twin axes for further customization
     return ax, ax2, ax3
-
 
 colors = [
     "#515151", "#F14040", "#1A6FDF", "#37AD6B", "#B177DE", "#CC9900",
