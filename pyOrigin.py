@@ -102,8 +102,6 @@ def pyOrigin(ax, x, y, x_scale="linear", y_scale="linear", x_tick_format=None, y
         ax.set_ylim(y_lim)
         ax2.set_ylim(y_lim)
 
-    # Return the main and twin axes for further customization
-    return ax, ax2, ax3
 
 colors = [
     "#515151", "#F14040", "#1A6FDF", "#37AD6B", "#B177DE", "#CC9900",
